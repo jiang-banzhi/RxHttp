@@ -1,9 +1,8 @@
 package com.banzhi.rxhttp.utils;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
-import com.banzhi.rxhttp.base.BaseApplication;
 
 /**
  * <pre>
@@ -20,12 +19,12 @@ public class AppUtils {
      *
      * @return 返回版本号
      */
-    public static String getAppVersion() {
+    public static String getAppVersion(Context context) {
         PackageInfo pi;
         String versionNum;
         try {
-            PackageManager pm = BaseApplication.getContext().getPackageManager();
-            pi = pm.getPackageInfo(BaseApplication.getContext().getPackageName(), PackageManager.GET_CONFIGURATIONS);
+            PackageManager pm = context.getPackageManager();
+            pi = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_CONFIGURATIONS);
             versionNum = pi.versionName;
         } catch (Exception e) {
             versionNum = "-1";

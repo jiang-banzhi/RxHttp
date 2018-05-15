@@ -1,6 +1,7 @@
 package com.banzhi.rxhttp.interceptor;
 
-import com.banzhi.rxhttp.base.BaseApplication;
+import android.content.Context;
+
 import com.banzhi.rxhttp.utils.SPUtils;
 
 import java.io.IOException;
@@ -15,20 +16,22 @@ import okhttp3.Response;
  * <pre>
  * @author : No.1
  * @time : 2018/5/14.
- * @desciption :
+ * @desciption :请求拦截器 便于统一添加header
  * @version :
  * </pre>
  */
 
 public class RequestInterceptor implements Interceptor {
-
+    Context mContext;
     private Map<String, Object> headerMaps = new TreeMap<>();
 
-    public RequestInterceptor(Map<String, Object> headerMaps) {
+    public RequestInterceptor(Context context, Map<String, Object> headerMaps) {
         this.headerMaps = headerMaps;
+        this.mContext = context;
     }
 
-    public RequestInterceptor() {
+    public RequestInterceptor(Context context) {
+        this.mContext = context;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class RequestInterceptor implements Interceptor {
             request
                     .addHeader("Authorization", getToken())
                     .addHeader("Content-type", "application/json")
-                    .addHeader("Version", getAppVersion())
+                    .addHeader("Accept", "application/json")
                     .addHeader("Terminal", 0 + "")
                     .addHeader("User-Agent", System.getProperty("http.agent"));
         } else {
@@ -50,13 +53,12 @@ public class RequestInterceptor implements Interceptor {
         return chain.proceed(request.build());
     }
 
-
-    private String getAppVersion() {
-        return getAppVersion();
-    }
-
     private String getToken() {
-        return (String) SPUtils.get(BaseApplication.getContext(), "token", "");
+        if (mContext != null) {
+            return (String) SPUtils.get(mContext, "token", "");
+        }
+        return "";
     }
+
 
 }

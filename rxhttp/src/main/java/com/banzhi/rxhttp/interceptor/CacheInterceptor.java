@@ -4,8 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.banzhi.rxhttp.base.BaseApplication;
-
 import java.io.IOException;
 
 import okhttp3.CacheControl;
@@ -17,24 +15,30 @@ import okhttp3.Response;
  * <pre>
  * @author : No.1
  * @time : 2018/5/14.
- * @desciption :
+ * @desciption : 缓存拦截器
  * @version :
  * </pre>
  */
 
 public class CacheInterceptor implements Interceptor {
+    Context mContext;
+
+    public CacheInterceptor(Context content) {
+        this.mContext = content;
+    }
+
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         //如果没有网络，则启用 FORCE_CACHE
-        if (!isNetworkConnected()) {
+        if (!isNetworkConnected(mContext)) {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
         }
-
         Response originalResponse = chain.proceed(request);
-        if (isNetworkConnected()) {
+        if (isNetworkConnected(mContext)) {
             //有网的时候读接口上的@Headers里的配置
             String cacheControl = request.cacheControl().toString();
             return originalResponse.newBuilder()
@@ -54,8 +58,7 @@ public class CacheInterceptor implements Interceptor {
      *
      * @return 返回值
      */
-    public static boolean isNetworkConnected() {
-        Context context = BaseApplication.getContext();
+    public static boolean isNetworkConnected(Context context) {
         if (context != null) {
             ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();

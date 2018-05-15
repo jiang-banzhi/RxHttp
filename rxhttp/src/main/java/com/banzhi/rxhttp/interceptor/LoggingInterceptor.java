@@ -16,7 +16,7 @@ import okio.Buffer;
  * <pre>
  * @author : No.1
  * @time : 2018/5/14.
- * @desciption :
+ * @desciption :日志拦截器
  * @version :
  * </pre>
  */
@@ -32,7 +32,7 @@ public class LoggingInterceptor implements Interceptor {
             Log.d("LogTAG", "request.body() == null");
         }
         //打印url信息
-        Log.w("RetrofitManager", request.url() + (request.body() != null ? "?" + parseParams(request.body(), requestBuffer) : ""));
+        Log.w("Retrofit", request.url() + (request.body() != null ? "?" + parseParams(request.body(), requestBuffer) : ""));
         final Response response = chain.proceed(request);
         return response;
     }
