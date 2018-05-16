@@ -2,6 +2,7 @@ package com.banzhi.rxhttp;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import com.banzhi.rxhttp.interceptor.CacheInterceptor;
 import com.banzhi.rxhttp.interceptor.RequestInterceptor;
@@ -30,7 +31,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RxHttp {
     private static final long DEF_CACHE_SIZE = 1024 * 1024 * 100;
-    Context mContext;
+    private static Context mContext;
     private static String mBaseUrl;
     private static Map<String, Object> mHeaderMaps = new TreeMap<>();
     private volatile static RxHttp mRxHttp = null;
@@ -104,7 +105,13 @@ public class RxHttp {
         return mRxHttp;
     }
 
-
+    /**
+     * 设置缓存
+     *
+     * @param cachePath 缓存路径
+     * @param cacheSize 缓存大小
+     * @return
+     */
     public RxHttp setCache(String cachePath, long cacheSize) {
         this.cachePath = cachePath;
         this.cacheSize = cacheSize < 0 ? DEF_CACHE_SIZE : cacheSize;
@@ -116,11 +123,17 @@ public class RxHttp {
         return mRxHttp;
     }
 
+    /**
+     * 设置最大重试次数
+     *
+     * @param maxRetry
+     */
     public void setRetryCount(int maxRetry) {
         this.maxRetry = maxRetry < 0 ? 0 : maxRetry;
     }
 
-    public Retrofit createRetrofit() {
+
+    private Retrofit createRetrofit() {
         if (retrofitBuilder == null) {
             retrofitBuilder = new Retrofit.Builder()
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
@@ -137,6 +150,7 @@ public class RxHttp {
 
         retrofitBuilder.baseUrl(mBaseUrl).addConverterFactory(GsonConverterFactory.create()).client(getClient());
         retrofit = retrofitBuilder.build();
+        Log.i("result", retrofit.baseUrl().toString());
         return retrofit;
     }
 
@@ -147,6 +161,12 @@ public class RxHttp {
      */
     public boolean create() {
         return createRetrofit() != null;
+    }
+
+    public static void updateBaseUrl(String baseUrl) {
+        mBaseUrl = baseUrl;
+        retrofit= retrofit.newBuilder().baseUrl(mBaseUrl).build();
+        Log.i("result", retrofit.baseUrl().toString());
     }
 
     /**
