@@ -9,12 +9,15 @@ import com.banzhi.rxhttp.interceptor.RequestInterceptor;
 import com.banzhi.rxhttp.interceptor.RetryInterceptor;
 
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -52,22 +55,45 @@ public class RxHttp {
     private TimeUnit mTimeUnit = TimeUnit.SECONDS;
     private static Retrofit retrofit;
 
-    private RxHttp(Context context) {
+    public static void init(Context context) {
         mContext = context;
     }
 
+    /**
+     * 初始化
+     *
+     * @return
+     */
+    public static Context getContext() {
+        return mContext;
+    }
 
-    public static RxHttp getInstance(Context context, String baseUrl) {
+    private RxHttp() {
+
+    }
+
+
+    public static RxHttp getInstance(String baseUrl) {
+        checkInitialize();
         mBaseUrl = baseUrl;
         mHeaderMaps.clear();
         if (mRxHttp == null) {
             synchronized (RxHttp.class) {
                 if (mRxHttp == null) {
-                    mRxHttp = new RxHttp(context);
+                    mRxHttp = new RxHttp();
                 }
             }
         }
         return mRxHttp;
+    }
+
+    /**
+     * 检测是否调用初始化方法
+     */
+    private static void checkInitialize() {
+        if (mContext == null) {
+            throw new ExceptionInInitializerError("请先在全局Application中调用 RxHttp.init() 初始化！");
+        }
     }
 
     /**
@@ -155,7 +181,7 @@ public class RxHttp {
     }
 
     /**
-     * 创建retrofit
+     * 更新retrofit baseurl
      *
      * @return true 成功  false 失败
      */
@@ -165,7 +191,7 @@ public class RxHttp {
 
     public static void updateBaseUrl(String baseUrl) {
         mBaseUrl = baseUrl;
-        retrofit= retrofit.newBuilder().baseUrl(mBaseUrl).build();
+        retrofit = retrofit.newBuilder().baseUrl(mBaseUrl).build();
         Log.i("result", retrofit.baseUrl().toString());
     }
 
@@ -204,8 +230,41 @@ public class RxHttp {
 
     public static <T> T getService(Class<T> clz) {
         if (retrofit == null) {
-            throw new NullPointerException("You need to initialize retrofit in application");
+            throw new NullPointerException("需要在application中调用create()创建retrofit对象");
         }
         return retrofit.create(clz);
     }
+
+    /**
+     * 单文件上传
+     *
+     * @param url 文件上传地址
+     * @param filePath 文件路径
+     * @return
+     */
+    public static Observable<ResponseBody> uploadFile(String url, String filePath) {
+        return null;
+    }
+
+    /**
+     * 多文件上传
+     *
+     * @param url 文件上传地址
+     * @param filepaths 文件路径集合
+     * @return
+     */
+    public static Observable<ResponseBody> uploadFile(String url, List<String> filepaths) {
+        return null;
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param fileUrl 文件地址
+     * @return
+     */
+    public static Observable<ResponseBody> downloadFile(String fileUrl) {
+        return null;
+    }
+    //https://github.com/lygttpod/RxHttpUtils
 }
