@@ -7,6 +7,7 @@ import android.util.Log;
 import com.banzhi.rxhttp.interceptor.CacheInterceptor;
 import com.banzhi.rxhttp.interceptor.RequestInterceptor;
 import com.banzhi.rxhttp.interceptor.RetryInterceptor;
+import com.banzhi.rxhttp.upload.UploadRetrofit;
 
 import java.io.File;
 import java.util.List;
@@ -238,23 +239,24 @@ public class RxHttp {
     /**
      * 单文件上传
      *
-     * @param url 文件上传地址
+     * @param url      文件上传地址
      * @param filePath 文件路径
      * @return
      */
-    public static Observable<ResponseBody> uploadFile(String url, String filePath) {
-        return null;
+    public static Observable<ResponseBody> uploadFile(String url, String key, String filePath) {
+
+        return UploadRetrofit.uploadFile(url, key, filePath);
     }
 
     /**
      * 多文件上传
      *
-     * @param url 文件上传地址
+     * @param url       文件上传地址
      * @param filepaths 文件路径集合
      * @return
      */
-    public static Observable<ResponseBody> uploadFile(String url, List<String> filepaths) {
-        return null;
+    public static Observable<ResponseBody> uploadFiles(String url, String key, List<String> filepaths) {
+        return UploadRetrofit.uploadFiles(url, key, filepaths);
     }
 
     /**
