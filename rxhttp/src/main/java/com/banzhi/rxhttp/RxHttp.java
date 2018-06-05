@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import com.banzhi.rxhttp.download.DownloadRetrofit;
 import com.banzhi.rxhttp.interceptor.CacheInterceptor;
 import com.banzhi.rxhttp.interceptor.RequestInterceptor;
 import com.banzhi.rxhttp.interceptor.RetryInterceptor;
@@ -266,7 +267,8 @@ public class RxHttp {
      * @return
      */
     public static Observable<ResponseBody> downloadFile(String fileUrl) {
-        return null;
+
+        return DownloadRetrofit.downloadFile(fileUrl);
     }
     //https://github.com/lygttpod/RxHttpUtils
 }

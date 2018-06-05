@@ -22,6 +22,6 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
         mContext = getApplicationContext();
         RxHttp.init(mContext);
-        RxHttp.getInstance("http://gc.bssyxx.cn:9002/").create();
+        RxHttp.getInstance("https://github.com/jiang-banzhi/").create();
     }
 }

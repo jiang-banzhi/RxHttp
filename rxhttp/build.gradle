@@ -25,12 +25,12 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.dependencies.retrofit
-    implementation rootProject.ext.dependencies.converter_gson
-    implementation rootProject.ext.dependencies.adapter_rxjava2
-    implementation rootProject.ext.dependencies.rxjava2
-    implementation rootProject.ext.dependencies.rxandroid2
-    implementation rootProject.ext.dependencies.gson
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.5.0'
+    api rootProject.ext.dependencies.retrofit
+    api rootProject.ext.dependencies.converter_gson
+    api rootProject.ext.dependencies.adapter_rxjava2
+    api rootProject.ext.dependencies.rxjava2
+    api rootProject.ext.dependencies.rxandroid2
+    api rootProject.ext.dependencies.gson
+    api 'com.squareup.okhttp3:logging-interceptor:3.5.0'
 }
 apply from:'mevan.gradle'
