@@ -177,7 +177,7 @@ public class RxHttp {
             cacheInterceptor = new CacheInterceptor(mContext);
             retryInterceptor = new RetryInterceptor(maxRetry);
         }
-        if (mHeaderMaps != null) {
+        if (mHeaderMaps != null && mHeaderMaps.size() > 0) {
             requestInterceptor = new RequestInterceptor(mContext, mHeaderMaps);
         } else {
             requestInterceptor = new RequestInterceptor(mContext, TOKEN_KEY);
