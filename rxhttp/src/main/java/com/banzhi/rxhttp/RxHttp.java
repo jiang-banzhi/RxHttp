@@ -61,6 +61,13 @@ public class RxHttp {
         mContext = context;
     }
 
+    private static String TOKEN_KEY = "Authorization";
+
+    public static void init(Context context, String tokenKey) {
+        mContext = context;
+        TOKEN_KEY = tokenKey;
+    }
+
     /**
      * 初始化
      *
@@ -173,7 +180,7 @@ public class RxHttp {
         if (mHeaderMaps != null) {
             requestInterceptor = new RequestInterceptor(mContext, mHeaderMaps);
         } else {
-            requestInterceptor = new RequestInterceptor(mContext);
+            requestInterceptor = new RequestInterceptor(mContext, TOKEN_KEY);
         }
 
         retrofitBuilder.baseUrl(mBaseUrl).addConverterFactory(GsonConverterFactory.create()).client(getClient());

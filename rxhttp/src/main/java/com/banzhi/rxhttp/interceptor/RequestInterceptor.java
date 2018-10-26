@@ -34,12 +34,19 @@ public class RequestInterceptor implements Interceptor {
         this.mContext = context;
     }
 
+    private static String TOKEN_KEY = "Authorization";
+
+    public RequestInterceptor(Context context, String tokenKey) {
+        this.mContext = context;
+        TOKEN_KEY = tokenKey;
+    }
+
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request.Builder request = chain.request().newBuilder();
         if (headerMaps == null || headerMaps.size() == 0) {
             request
-                    .addHeader("Authorization", getToken())
+                    .addHeader(TOKEN_KEY, getToken())
                     .addHeader("Content-type", "application/json")
                     .addHeader("Accept", "application/json")
                     .addHeader("Terminal", 0 + "")
