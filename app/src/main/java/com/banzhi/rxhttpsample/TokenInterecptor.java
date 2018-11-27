@@ -30,7 +30,7 @@ public class TokenInterecptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request.Builder request = chain.request().newBuilder();
         Response proceed = chain.proceed(request.build());
-        if (!isTokenExpired(proceed)) {
+        if (isTokenExpired(proceed)) {
             String newToken = HttpUtils.getNewToken();
             Request newRequest = chain.request().newBuilder()
                     .addHeader("token", newToken)
