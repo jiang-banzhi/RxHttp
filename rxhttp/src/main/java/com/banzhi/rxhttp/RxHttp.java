@@ -11,6 +11,7 @@ import com.banzhi.rxhttp.interceptor.RetryInterceptor;
 import com.banzhi.rxhttp.upload.UploadRetrofit;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import okhttp3.Cache;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -47,8 +49,9 @@ public class RxHttp {
     private RequestInterceptor requestInterceptor;
     private CacheInterceptor cacheInterceptor;
     private RetryInterceptor retryInterceptor;
+    List<Interceptor> interceptors;
     int maxRetry;
-
+    RetryInterceptor.TokenProxy tokenProxy;
     private Cache cache;
     private String cachePath = Environment.getExternalStorageDirectory().getPath() + "/rxHttpCacheData";
     long cacheSize = DEF_CACHE_SIZE;
@@ -103,6 +106,14 @@ public class RxHttp {
         if (mContext == null) {
             throw new ExceptionInInitializerError("请先在全局Application中调用 RxHttp.init() 初始化！");
         }
+    }
+
+    public RxHttp addInterceptor(Interceptor interceptor) {
+        if (interceptors == null) {
+            interceptors = new ArrayList<>();
+        }
+        interceptors.add(interceptor);
+        return this;
     }
 
     /**
@@ -163,8 +174,18 @@ public class RxHttp {
      *
      * @param maxRetry
      */
-    public void setRetryCount(int maxRetry) {
+    public RxHttp setRetryCount(int maxRetry) {
         this.maxRetry = maxRetry < 0 ? 0 : maxRetry;
+        return this;
+    }
+    /**
+     * 设置最大重试次数
+     *
+     * @param tokenProxy
+     */
+    public RxHttp setTokenProxy(RetryInterceptor.TokenProxy tokenProxy) {
+        this.tokenProxy =tokenProxy;
+        return this;
     }
 
 
@@ -175,7 +196,7 @@ public class RxHttp {
             loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             cacheInterceptor = new CacheInterceptor(mContext);
-            retryInterceptor = new RetryInterceptor(maxRetry);
+            retryInterceptor = new RetryInterceptor(maxRetry,tokenProxy);
         }
         if (mHeaderMaps != null && mHeaderMaps.size() > 0) {
             requestInterceptor = new RequestInterceptor(mContext, mHeaderMaps);
@@ -221,7 +242,7 @@ public class RxHttp {
             cache = new Cache(new File(cachePath), cacheSize);
         }
 
-        OkHttpClient httpClient = new OkHttpClient.Builder()
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .retryOnConnectionFailure(true)
                 .addInterceptor(requestInterceptor)
                 .addInterceptor(retryInterceptor)
@@ -231,9 +252,14 @@ public class RxHttp {
                 .cache(cache)
                 .readTimeout(mTimeOut, mTimeUnit)
                 .writeTimeout(mTimeOut, mTimeUnit)
-                .connectTimeout(mTimeOut, mTimeUnit)
+                .connectTimeout(mTimeOut, mTimeUnit);
+        if (interceptors != null) {
+            for (Interceptor interceptor : interceptors) {
+                builder.addInterceptor(interceptor);
+            }
+        }
+        OkHttpClient httpClient = builder
                 .build();
-
         return httpClient;
     }
 
@@ -243,6 +269,7 @@ public class RxHttp {
         }
         return retrofit.create(clz);
     }
+
 
     /**
      * 单文件上传
@@ -277,5 +304,5 @@ public class RxHttp {
 
         return DownloadRetrofit.downloadFile(fileUrl);
     }
-    //https://github.com/lygttpod/RxHttpUtils
+
 }

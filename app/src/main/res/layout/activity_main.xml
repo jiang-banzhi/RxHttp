@@ -20,4 +20,12 @@
         app:layout_constraintTop_toBottomOf="@id/btn_down"
         app:layout_goneMarginTop="6dp" />
 
+    <Button
+        android:id="@+id/btn_token"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="测试token"
+        app:layout_constraintTop_toBottomOf="@id/tv"
+        app:layout_goneMarginTop="6dp" />
+
 </android.support.constraint.ConstraintLayout>

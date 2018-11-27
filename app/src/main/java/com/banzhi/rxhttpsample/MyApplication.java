@@ -22,6 +22,10 @@ public class MyApplication extends BaseApplication {
         super.onCreate();
         mContext = getApplicationContext();
         RxHttp.init(mContext);
-        RxHttp.getInstance("https://github.com/jiang-banzhi/").create();
+        RxHttp.getInstance("https://github.com/jiang-banzhi/")
+//                .addInterceptor(new TokenInterecptor())
+                .setRetryCount(2)
+                .setTokenProxy(new MyTokenProxy())
+                .create();
     }
 }

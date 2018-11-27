@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.banzhi.rxhttp.RxHttp;
 import com.banzhi.rxhttp.download.DownloadObserver;
+import com.banzhi.rxhttp.exception.ApiException;
+import com.banzhi.rxhttp.subscriber.BaseSubscriber;
+import com.banzhi.rxhttp.utils.RxHelper;
 
 import io.reactivex.disposables.Disposable;
 
@@ -45,6 +48,25 @@ public class MainActivity extends AppCompatActivity {
                         tv.setText("bytesRead=" + bytesRead + "     contentLength=" + contentLength + "  progress=" + progress + "  done" + done + "   filePath" + filePath);
                     }
                 });
+            }
+        });
+        findViewById(R.id.btn_token).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RxHttp.getRetrofit().create(ApiServer.class)
+                        .loadType()
+                        .compose(RxHelper.<BaseBean>switchSchedulers())
+                        .subscribe(new BaseSubscriber<BaseBean>() {
+                            @Override
+                            public void onError(ApiException e) {
+
+                            }
+
+                            @Override
+                            public void onNext(BaseBean baseBean) {
+                                super.onNext(baseBean);
+                            }
+                        });
             }
         });
     }
