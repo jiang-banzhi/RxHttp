@@ -48,7 +48,7 @@ public class RequestInterceptor implements Interceptor {
             request
                     .addHeader(TOKEN_KEY, getToken())
                     .addHeader("Content-type", "application/json")
-                    .addHeader("Accept", "application/json")
+                    .addHeader("Accept", "*/*")
                     .addHeader("Terminal", 0 + "")
                     .addHeader("User-Agent", System.getProperty("http.agent"));
         } else {

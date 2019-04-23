@@ -18,7 +18,10 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends AppCompatActivity {
     TextView tv;
     Button btnDown;
-    String url = "http://220.170.49.110/6/p/z/o/m/pzomnzzmarvqljydxmlpdwuznlksvl/hd.yinyuetai.com/C9330152A4DFC7FB2FBC3B6070E67899.flv?sc\\u003d79f895a4e8743128\\u0026br\\u003d1105\\u0026vid\\u003d2491056\\u0026aid\\u003d201\\u0026area\\u003dHT\\u0026vst\\u003d4";
+//    String url = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555579341676&di=16205e5ca66348749a3d434b7036d249&imgtype=0&src=http%3A%2F%2Fimg4.duitang.com%2Fuploads%2Fitem%2F201202%2F03%2F20120203155201_BwB3B.jpg";
+    String url = "http://192.168.1.210:6003/FilePath//UploadFile/ddf3cdf5-0afb-4e48-8db8-b8e503348622.apk";
+//    String url = "http://192.168.1.210:6003/FilePath//UploadFile/1cd251f8-a127-41f7-8253-3b0d0ab27c08.gif";
+//    String url = "https://github.com/Trinea/android-open-project/archive/master.zip";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         btnDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RxHttp.downloadFile(url).subscribe(new DownloadObserver("image") {
+                RxHttp.downloadFile(url).subscribe(new DownloadObserver("image.apk") {
 
 
                     @Override
