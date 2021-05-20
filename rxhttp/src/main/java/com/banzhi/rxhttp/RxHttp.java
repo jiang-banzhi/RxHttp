@@ -41,6 +41,7 @@ public class RxHttp {
     private static Context mContext;
     private static String mBaseUrl;
     private static Map<String, Object> mHeaderMaps = new TreeMap<>();
+
     private volatile static RxHttp mRxHttp = null;
 
     private Retrofit.Builder retrofitBuilder;
