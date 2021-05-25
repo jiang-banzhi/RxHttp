@@ -1,20 +1,13 @@
-package com.banzhi.rxhttpsample;
+package com.banzhi.rxhttpsample
 
-import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.nio.charset.Charset;
-
-import okhttp3.Interceptor;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
-import okio.Buffer;
-import okio.BufferedSource;
+import android.util.Log
+import okhttp3.Interceptor
+import okhttp3.Request
+import okhttp3.Response
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.IOException
+import java.nio.charset.Charset
 
 /**
  * <pre>
@@ -22,46 +15,43 @@ import okio.BufferedSource;
  * @time : 2018/11/27.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public class TokenInterecptor implements Interceptor {
-    @Override
-    public Response intercept(Chain chain) throws IOException {
-        Request.Builder request = chain.request().newBuilder();
-        Response proceed = chain.proceed(request.build());
+class TokenInterecptor : Interceptor {
+    @Throws(IOException::class)
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val request = chain.request().newBuilder()
+        val proceed: Response = chain.proceed(request.build())
         if (isTokenExpired(proceed)) {
-            String newToken = HttpUtils.getNewToken();
-            Request newRequest = chain.request().newBuilder()
-                    .addHeader("token", newToken)
-                    .build();
-            return chain.proceed(newRequest);
+            val newToken = HttpUtils.newToken
+            val newRequest: Request = chain.request().newBuilder()
+                .addHeader("token", newToken)
+                .build()
+            return chain.proceed(newRequest)
         }
-        return proceed;
+        return proceed
     }
 
-    Charset UTF8 = Charset.forName("UTF-8");
-
-    private boolean isTokenExpired(Response proceed) throws IOException {
-        ResponseBody body = proceed.body();
-        Log.i("result", "isTokenExpired: ");
-        BufferedSource source = body.source();
-        source.request(Long.MAX_VALUE);
-        Buffer buffer = source.buffer();
-        Charset charset = UTF8;
-        MediaType contentType = body.contentType();
+    var UTF8 = Charset.forName("UTF-8")
+    @Throws(IOException::class)
+    private fun isTokenExpired(proceed: Response): Boolean {
+        val body = proceed.body
+        Log.i("result", "isTokenExpired: ")
+        val source = body!!.source()
+        source.request(Long.MAX_VALUE)
+        val buffer = source.buffer()
+        var charset = UTF8
+        val contentType = body.contentType()
         if (contentType != null) {
-            charset = contentType.charset(UTF8);
+            charset = contentType.charset(UTF8)
         }
-        String result = buffer.clone().readString(charset);
+        val result = buffer.clone().readString(charset!!)
         try {
-            JSONObject jsonObject = new JSONObject(result);
-            return jsonObject.optInt("Code") == -1;
-        } catch (JSONException e) {
-            e.printStackTrace();
+            val jsonObject = JSONObject(result)
+            return jsonObject.optInt("Code") == -1
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
-        return false;
+        return false
     }
-
-
 }

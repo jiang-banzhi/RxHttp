@@ -1,39 +1,31 @@
-package com.banzhi.rxhttp.download;
+package com.banzhi.rxhttp.download
 
-import com.banzhi.rxhttp.exception.ApiException;
-import com.banzhi.rxhttp.utils.ToastUtils;
-
-import io.reactivex.Observer;
-import io.reactivex.annotations.NonNull;
-import okhttp3.ResponseBody;
+import com.banzhi.rxhttp.exception.ApiException
+import io.reactivex.Observer
+import okhttp3.ResponseBody
 
 /**
  * <pre>
- * @author : No.1
- * @time : 2018/6/5.
+ * @author :
+ * @time : 2021/5/25.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public abstract class BaseDownloadObserver implements Observer<ResponseBody> {
-
+abstract class BaseDownloadObserver : Observer<ResponseBody?> {
     /**
      * 失败回调
      *
      * @param errorMsg 错误信息
      */
-    protected abstract void doOnError(String errorMsg);
+    protected abstract fun doOnError(errorMsg: String?)
 
-
-    @Override
-    public void onError(@NonNull Throwable e) {
-        String error = ApiException.handleException(e).getMessage();
-        setError(error);
+    override fun onError(e: Throwable) {
+        val error = ApiException.handleException(e).message
+        setError(error)
     }
 
-    private void setError(String errorMsg) {
-        ToastUtils.showShort(errorMsg);
-        doOnError(errorMsg);
+    private fun setError(errorMsg: String?) {
+        doOnError(errorMsg)
     }
 }

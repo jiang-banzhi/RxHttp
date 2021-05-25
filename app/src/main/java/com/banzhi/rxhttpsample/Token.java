@@ -21,4 +21,11 @@ public class Token {
     public void setToken(String token) {
         Token = token;
     }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "Token='" + Token + '\'' +
+                '}';
+    }
 }

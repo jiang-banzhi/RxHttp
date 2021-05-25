@@ -2,7 +2,6 @@ package com.banzhi.rxhttp.download;
 
 import android.text.TextUtils;
 
-import com.banzhi.rxhttp.RxHttp;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,8 +12,8 @@ import okhttp3.ResponseBody;
 
 /**
  * <pre>
- * @author : No.1
- * @time : 2018/6/5.
+ * @author :
+ * @time : 2021/5/25.
  * @desciption :
  * @version :
  * </pre>
@@ -31,14 +30,14 @@ public class DownloadHelper {
      * 保存文件
      *
      * @param response ResponseBody
-     * @param fileName 文件名
+     * @param filePath 文件保存路径
      * @return 返回
      * @throws IOException
      */
-    public File saveFile(ResponseBody response, String fileName, ProgressListener progressListener) throws IOException {
+    public File saveFile(ResponseBody response, String filePath, ProgressListener progressListener) throws IOException {
 
-        String destFileDir = RxHttp.getContext().getExternalFilesDir(null) + File.separator;
-
+        String fileName = filePath.substring(filePath.lastIndexOf("/") + 1);
+        String path=filePath.substring(0,filePath.lastIndexOf("/"));
         long contentLength = response.contentLength();
         if (!TextUtils.isEmpty(fileName)) {
             String type;
@@ -67,7 +66,7 @@ public class DownloadHelper {
 
             long sum = 0;
 
-            File dir = new File(destFileDir);
+            File dir = new File(path);
             if (!dir.exists()) {
                 dir.mkdirs();
             }
@@ -90,12 +89,14 @@ public class DownloadHelper {
                     is.close();
                 }
             } catch (IOException e) {
+                e.printStackTrace();
             }
             try {
                 if (fos != null) {
                     fos.close();
                 }
             } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }

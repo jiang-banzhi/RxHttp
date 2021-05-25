@@ -12,8 +12,8 @@ import retrofit2.http.Url;
 
 /**
  * <pre>
- * @author : banzhi
- * @time : 2018/6/4.
+ * @author :
+ * @time : 2021/5/25.
  * @desciption : 文件上传
  * @version :
  * </pre>

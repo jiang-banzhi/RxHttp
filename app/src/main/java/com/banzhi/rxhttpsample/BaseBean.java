@@ -37,4 +37,13 @@ public class BaseBean<T> {
     public void setTarget(T target) {
         Target = target;
     }
+
+    @Override
+    public String toString() {
+        return "BaseBean{" +
+                "Code=" + Code +
+                ", Message='" + Message + '\'' +
+                ", Target=" + Target +
+                '}';
+    }
 }

@@ -15,13 +15,18 @@ import okhttp3.ResponseBody;
 /**
  * <pre>
  * @author : No.1
- * @time : 2018/6/4.
+ * @time : 2021/5/21.
  * @desciption :
  * @version :
  * </pre>
  */
 
 public class UploadRetrofit {
+
+    private static UploadApiAddress getUploadService() {
+        return RxHttp.Companion.getInstance()
+                .getService(UploadApiAddress.class);
+    }
 
     /**
      * 单文件上传
@@ -36,11 +41,12 @@ public class UploadRetrofit {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData(key, file.getName(), requestFile);
 
-        return RxHttp
-                .getService(UploadApiAddress.class)
+        return getUploadService()
                 .uploadFile(uploadUrl, body)
-                .compose(RxHelper.<ResponseBody>switchSchedulers());
+                .compose(RxHelper.Companion.switchSchedulers());
     }
+
+
 
     /**
      * 多文件上传
@@ -61,9 +67,8 @@ public class UploadRetrofit {
 
         List<MultipartBody.Part> parts = builder.build().parts();
 
-        return RxHttp
-                .getService(UploadApiAddress.class)
+        return getUploadService()
                 .uploadFiles(uploadUrl, parts)
-                .compose(RxHelper.<ResponseBody>switchSchedulers());
+                .compose(RxHelper.Companion.switchSchedulers());
     }
 }

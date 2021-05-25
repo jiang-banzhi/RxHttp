@@ -1,9 +1,9 @@
-package com.banzhi.rxhttpsample;
+package com.banzhi.rxhttpsample
 
-import android.content.Context;
-
-import com.banzhi.rxhttp.RxHttp;
-import com.banzhi.rxhttp.base.BaseApplication;
+import android.app.Application
+import android.content.Context
+import com.banzhi.rxhttp.RxHttp.Companion.getInstance
+import java.util.List
 
 /**
  * <pre>
@@ -11,21 +11,12 @@ import com.banzhi.rxhttp.base.BaseApplication;
  * @time : 2018/5/16.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public class MyApplication extends BaseApplication {
-    Context mContext;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mContext = getApplicationContext();
-        RxHttp.init(mContext);
-        RxHttp.getInstance("https://github.com/jiang-banzhi/")
-//                .addInterceptor(new TokenInterecptor())
-                .setRetryCount(2)
-                .setTokenProxy(new MyTokenProxy())
-                .create();
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        getInstance().baseUrl("https://github.com/jiang-banzhi/")
+            .create(60, externalCacheDir, null, arrayListOf(TokenInterecptor()))
     }
 }

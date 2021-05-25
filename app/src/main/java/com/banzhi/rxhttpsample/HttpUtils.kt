@@ -1,30 +1,32 @@
-package com.banzhi.rxhttpsample;
+package com.banzhi.rxhttpsample
 
-import java.io.IOException;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.io.IOException
 
 /**
  * <pre>
- * @author : No.1
- * @time : 2018/11/27.
+ * @author :
+ * @time : 2021/5/25.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public class HttpUtils {
-    public static String getNewToken() throws IOException {
-        String headerToken;
-        Retrofit retrofit = new Retrofit.Builder()
+object HttpUtils {
+    @get:Throws(IOException::class)
+    val newToken: String
+        get() {
+            val headerToken: String
+            val retrofit = Retrofit.Builder()
                 .baseUrl("http://192.168.1.210:8008/")
                 .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        retrofit2.Response<BaseBean<Token>> response = retrofit.create(ApiServer.class)
-                .login(new LoginRequest("王宇", "123456"))
-                .execute();
-        headerToken = response.body().getTarget().getToken().toString();
-        return headerToken;
-    }
+                .build()
+            val response = retrofit.create(
+                ApiServer::class.java
+            )
+                .login(LoginRequest("王宇", "123456"))
+                .execute()
+            headerToken = response.body()!!.target.token.toString()
+            return headerToken
+        }
 }

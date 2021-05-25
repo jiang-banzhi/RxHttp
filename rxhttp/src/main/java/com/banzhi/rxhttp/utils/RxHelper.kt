@@ -1,15 +1,9 @@
-package com.banzhi.rxhttp.utils;
+package com.banzhi.rxhttp.utils
 
-import android.app.Dialog;
-
-import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.ObservableTransformer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+import android.app.Dialog
+import io.reactivex.ObservableTransformer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * <pre>
@@ -17,60 +11,41 @@ import io.reactivex.schedulers.Schedulers;
  * @time : 2018/5/14.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public class RxHelper {
-    /**
-     * @param <T> 泛型
-     * @return 返回Observable
-     */
-    public static <T> ObservableTransformer<T, T> switchSchedulers() {
-        return new ObservableTransformer<T, T>() {
-
-            @Override
-            public ObservableSource<T> apply(io.reactivex.Observable<T> upstream) {
-                return upstream
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .doOnSubscribe(new Consumer<Disposable>() {
-                            @Override
-                            public void accept(@NonNull Disposable disposable) throws Exception {
-
-                            }
-                        })
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(AndroidSchedulers.mainThread());
+class RxHelper {
+    companion object {
+        /**
+         * @param <T> 泛型
+         * @return 返回Observable
+        </T> */
+        fun <T> switchSchedulers(): ObservableTransformer<T, T> {
+            return ObservableTransformer { upstream ->
+                upstream
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .doOnSubscribe { }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
             }
-        };
+        }
 
-    }
-
-    /**
-     * 带参数  显示loading对话框
-     *
-     * @param dialog loading
-     * @param <T>    泛型
-     * @return 返回Observable
-     */
-    public static <T> ObservableTransformer<T, T> switchSchedulers(final Dialog dialog) {
-        return new ObservableTransformer<T, T>() {
-            @Override
-            public ObservableSource<T> apply(@NonNull Observable<T> upstream) {
-                return upstream
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .doOnSubscribe(new Consumer<Disposable>() {
-                            @Override
-                            public void accept(@NonNull Disposable disposable) throws Exception {
-                                if (dialog != null) {
-                                    dialog.show();
-                                }
-                            }
-                        })
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .observeOn(AndroidSchedulers.mainThread());
+        /**
+         * 带参数  显示loading对话框
+         *
+         * @param dialog loading
+         * @param <T>    泛型
+         * @return 返回Observable
+        </T> */
+        fun <T> switchSchedulers(dialog: Dialog?): ObservableTransformer<T, T> {
+            return ObservableTransformer { upstream ->
+                upstream
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .doOnSubscribe { dialog?.show() }
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(AndroidSchedulers.mainThread())
             }
-        };
+        }
     }
 }

@@ -1,23 +1,22 @@
-package com.banzhi.rxhttpsample;
+package com.banzhi.rxhttpsample
 
-import io.reactivex.Observable;
-import retrofit2.Call;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
+import io.reactivex.Observable
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 /**
  * <pre>
- * @author : No.1
- * @time : 2018/11/27.
+ * @author :
+ * @time : 2021/5/25.
  * @desciption :
  * @version :
- * </pre>
+</pre> *
  */
-
-public interface ApiServer {
+interface ApiServer {
     @POST("http://192.168.1.210:8008/v1/conferencesmanage/getconferencesgenrelist")
-    Observable<BaseBean> loadType();
+    fun loadType(): Observable<BaseBean<*>>
 
     @POST("/v1/home/userlogin")
-    Call<BaseBean<Token>> login(@Body LoginRequest request);
+    fun login(@Body request: LoginRequest?): Call<BaseBean<Token>>
 }
