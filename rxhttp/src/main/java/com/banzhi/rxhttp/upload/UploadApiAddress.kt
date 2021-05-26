@@ -1,14 +1,12 @@
-package com.banzhi.rxhttp.upload;
+package com.banzhi.rxhttp.upload
 
-import java.util.List;
-
-import io.reactivex.Observable;
-import okhttp3.MultipartBody;
-import okhttp3.ResponseBody;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
-import retrofit2.http.Url;
+import io.reactivex.Observable
+import okhttp3.MultipartBody
+import okhttp3.ResponseBody
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
+import retrofit2.http.Url
 
 /**
  * <pre>
@@ -16,9 +14,9 @@ import retrofit2.http.Url;
  * @time : 2021/5/25.
  * @desciption : 文件上传
  * @version :
- * </pre>
+</pre> *
  */
-public interface UploadApiAddress {
+interface UploadApiAddress {
     /**
      * 上传
      *
@@ -28,8 +26,10 @@ public interface UploadApiAddress {
      */
     @Multipart
     @POST
-    Observable<ResponseBody> uploadFile(@Url String uploadUrl, @Part MultipartBody.Part file);
-
+    fun uploadFile(
+        @Url uploadUrl: String,
+        @Part file: MultipartBody.Part
+    ): Observable<ResponseBody>
 
     /**
      * 上传多个文件
@@ -40,6 +40,8 @@ public interface UploadApiAddress {
      */
     @Multipart
     @POST
-    Observable<ResponseBody> uploadFiles(@Url String uploadUrl, @Part List<MultipartBody.Part> files);
-
+    fun uploadFiles(
+        @Url uploadUrl: String,
+        @Part files: List<MultipartBody.Part?>
+    ): Observable<ResponseBody>
 }

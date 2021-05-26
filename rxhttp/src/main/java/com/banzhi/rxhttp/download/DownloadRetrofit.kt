@@ -14,30 +14,32 @@ import retrofit2.Call
  * @version :
 </pre> *
  */
-object DownloadRetrofit {
-    /**
-     * 文件下载 RxJava方式
-     *
-     * @param url 文件路径
-     * @return
-     */
-    @JvmStatic
-    fun downloadFile(url: String?): Observable<ResponseBody> {
-        return getApiService()
-            .downloadByRx(url)
-            .compose(RxHelper.switchSchedulers())
-    }
+class DownloadRetrofit {
+    companion object {
+        /**
+         * 文件下载 RxJava方式
+         *
+         * @param url 文件路径
+         * @return
+         */
+        @JvmStatic
+        fun downloadFile(url: String?): Observable<ResponseBody> {
+            return getApiService()
+                .downloadByRx(url)
+                .compose(RxHelper.switchSchedulers())
+        }
 
-    fun downloadByRx(url: String?): Call<ResponseBody> {
-        return getApiService()
-            .downloadByCall(url)
-    }
+        fun downloadByRx(url: String?): Call<ResponseBody> {
+            return getApiService()
+                .downloadByCall(url)
+        }
 
-    suspend fun d(url: String?): ResponseBody {
-        return getApiService().downloadByCoroutine(url)
-    }
+        suspend fun downloadByCoroutine(url: String?): ResponseBody {
+            return getApiService().downloadByCoroutine(url)
+        }
 
-    private fun getApiService(): DownloadApiAddress {
-        return RxHttp.getInstance().getService(DownloadApiAddress::class.java)
+        private fun getApiService(): DownloadApiAddress {
+            return RxHttp.getInstance().getService(DownloadApiAddress::class.java)
+        }
     }
 }
