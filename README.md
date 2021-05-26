@@ -9,5 +9,5 @@
 	}
   
   	dependencies {
-	        implementation 'com.github.jiang-banzhi:RxHttp:Tag'
+	        implementation 'com.github.jiang-banzhi:RxHttp:2.0.1'
 	}
