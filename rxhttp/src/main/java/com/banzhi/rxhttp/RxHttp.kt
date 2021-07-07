@@ -64,13 +64,13 @@ class RxHttp private constructor() : Serializable {
     ) {
         create {
             retryOnConnectionFailure(true)
+            interceptors?.forEach {
+                addInterceptor(it)
+            }
             addInterceptor(RequestInterceptor(headers))
             val logInterceptor = HttpLoggingInterceptor()
             logInterceptor.level = HttpLoggingInterceptor.Level.BODY
             addInterceptor(logInterceptor)
-            interceptors?.forEach {
-                addInterceptor(it)
-            }
             cacheFile?.let {
                 cache(Cache(it, DEF_CACHE_SIZE))
             }
