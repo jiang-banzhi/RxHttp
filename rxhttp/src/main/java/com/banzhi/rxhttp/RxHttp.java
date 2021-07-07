@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
+import okhttp3.Authenticator;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -45,6 +46,7 @@ public class RxHttp {
 
     private Retrofit.Builder retrofitBuilder;
 
+    private Authenticator authenticator;
     private HttpLoggingInterceptor loggingInterceptor;
     private RequestInterceptor requestInterceptor;
     private CacheInterceptor cacheInterceptor;
@@ -69,6 +71,7 @@ public class RxHttp {
     public static void init(Context context, String tokenKey) {
         mContext = context;
         TOKEN_KEY = tokenKey;
+
     }
 
     /**
@@ -178,13 +181,14 @@ public class RxHttp {
         this.maxRetry = maxRetry < 0 ? 0 : maxRetry;
         return this;
     }
+
     /**
      * 设置最大重试次数
      *
      * @param tokenProxy
      */
     public RxHttp setTokenProxy(RetryInterceptor.TokenProxy tokenProxy) {
-        this.tokenProxy =tokenProxy;
+        this.tokenProxy = tokenProxy;
         return this;
     }
 
@@ -196,7 +200,7 @@ public class RxHttp {
             loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             cacheInterceptor = new CacheInterceptor(mContext);
-            retryInterceptor = new RetryInterceptor(maxRetry,tokenProxy);
+            retryInterceptor = new RetryInterceptor(maxRetry, tokenProxy);
         }
         if (mHeaderMaps != null && mHeaderMaps.size() > 0) {
             requestInterceptor = new RequestInterceptor(mContext, mHeaderMaps);
@@ -243,8 +247,14 @@ public class RxHttp {
         }
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .retryOnConnectionFailure(true)
-                .addInterceptor(requestInterceptor)
+                .retryOnConnectionFailure(true);
+        if (interceptors != null) {
+            for (Interceptor interceptor : interceptors) {
+                builder.addInterceptor(interceptor);
+            }
+        }
+        builder.authenticator(authenticator);
+        builder.addInterceptor(requestInterceptor)
                 .addInterceptor(retryInterceptor)
                 .addInterceptor(loggingInterceptor)
                 .addInterceptor(cacheInterceptor)
@@ -253,11 +263,7 @@ public class RxHttp {
                 .readTimeout(mTimeOut, mTimeUnit)
                 .writeTimeout(mTimeOut, mTimeUnit)
                 .connectTimeout(mTimeOut, mTimeUnit);
-        if (interceptors != null) {
-            for (Interceptor interceptor : interceptors) {
-                builder.addInterceptor(interceptor);
-            }
-        }
+
         OkHttpClient httpClient = builder
                 .build();
         return httpClient;
