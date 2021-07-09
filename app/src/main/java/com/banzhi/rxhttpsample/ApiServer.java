@@ -20,4 +20,7 @@ public interface ApiServer {
 
     @POST("/v1/home/userlogin")
     Call<BaseBean<Token>> login(@Body LoginRequest request);
+
+    @POST("http://192.168.1.209:8988/v1/home/Login")
+    Observable<BaseBean> login1(@Body LoginRequest request);
 }

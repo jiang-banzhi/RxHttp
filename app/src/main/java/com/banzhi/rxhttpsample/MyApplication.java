@@ -24,6 +24,7 @@ public class MyApplication extends BaseApplication {
         RxHttp.init(mContext);
         RxHttp.getInstance("https://github.com/jiang-banzhi/")
 //                .addInterceptor(new TokenInterecptor())
+                .addCoverterFactory(CoverterFactory.create())
                 .setRetryCount(2)
                 .setTokenProxy(new MyTokenProxy())
                 .create();

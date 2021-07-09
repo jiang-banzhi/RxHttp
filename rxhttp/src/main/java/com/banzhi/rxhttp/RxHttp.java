@@ -24,6 +24,7 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Converter;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -51,6 +52,7 @@ public class RxHttp {
     private RequestInterceptor requestInterceptor;
     private CacheInterceptor cacheInterceptor;
     private RetryInterceptor retryInterceptor;
+    private Converter.Factory coverterFactory;
     List<Interceptor> interceptors;
     int maxRetry;
     RetryInterceptor.TokenProxy tokenProxy;
@@ -109,6 +111,11 @@ public class RxHttp {
         if (mContext == null) {
             throw new ExceptionInInitializerError("请先在全局Application中调用 RxHttp.init() 初始化！");
         }
+    }
+
+    public RxHttp addCoverterFactory(Converter.Factory coverterFactory) {
+        this.coverterFactory = coverterFactory;
+        return this;
     }
 
     public RxHttp addInterceptor(Interceptor interceptor) {
@@ -195,8 +202,7 @@ public class RxHttp {
 
     private Retrofit createRetrofit() {
         if (retrofitBuilder == null) {
-            retrofitBuilder = new Retrofit.Builder()
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+            retrofitBuilder = new Retrofit.Builder();
             loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             cacheInterceptor = new CacheInterceptor(mContext);
@@ -208,7 +214,13 @@ public class RxHttp {
             requestInterceptor = new RequestInterceptor(mContext, TOKEN_KEY);
         }
 
-        retrofitBuilder.baseUrl(mBaseUrl).addConverterFactory(GsonConverterFactory.create()).client(getClient());
+        Retrofit.Builder builder = retrofitBuilder.baseUrl(mBaseUrl);
+        if (coverterFactory != null) {
+            builder.addConverterFactory(coverterFactory);
+        }
+        builder.addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .client(getClient());
         retrofit = retrofitBuilder.build();
         Log.i("result", retrofit.baseUrl().toString());
         return retrofit;
@@ -253,7 +265,9 @@ public class RxHttp {
                 builder.addInterceptor(interceptor);
             }
         }
-        builder.authenticator(authenticator);
+        if (authenticator != null) {
+            builder.authenticator(authenticator);
+        }
         builder.addInterceptor(requestInterceptor)
                 .addInterceptor(retryInterceptor)
                 .addInterceptor(loggingInterceptor)
