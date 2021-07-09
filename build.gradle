@@ -17,13 +17,13 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-//        maven(){
+        maven(){
 //            url "E:\\maven\\mvn-repo"
-////            url "https://raw.githubusercontent.com/jiang-banzhi/mvn-repo/master/"
-//        }
-        maven {
-            url 'http://localhost:8081/repository/maven-releases/'
+            url "https://raw.githubusercontent.com/jiang-banzhi/mvn-repo/master/"
         }
+//        maven {
+//            url 'http://localhost:8081/repository/maven-releases/'
+//        }
     }
 }
 
