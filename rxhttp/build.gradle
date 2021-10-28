@@ -30,7 +30,7 @@ dependencies {
     api 'com.squareup.retrofit2:retrofit:2.9.0'
     api 'com.squareup.retrofit2:converter-gson:2.9.0'
     api 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    api 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     compile rootProject.ext.dependencies.adapter_rxjava2
     compile rootProject.ext.dependencies.rxjava2
