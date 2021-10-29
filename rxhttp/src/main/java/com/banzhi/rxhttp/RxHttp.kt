@@ -8,6 +8,7 @@ import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,13 +46,16 @@ class RxHttp private constructor() : Serializable {
         return this
     }
 
-    fun create(builder: OkHttpClient.Builder.() -> Unit) {
+    fun create(factory: Converter.Factory? = null, builder: OkHttpClient.Builder.() -> Unit) {
         if (BASEURL.isEmpty()) {
             throw UninitializedPropertyAccessException("未设置baseurl")
         }
-        mRetrofit = Retrofit.Builder()
-            .baseUrl(BASEURL)
-            .addConverterFactory(GsonConverterFactory.create())
+        val retrofitBuilder = Retrofit.Builder()
+        retrofitBuilder.baseUrl(BASEURL)
+        if (factory != null) {
+            retrofitBuilder.addConverterFactory(factory)
+        }
+        mRetrofit = retrofitBuilder.addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .client(OkHttpClient.Builder().also(builder).build()).build()
     }
@@ -60,9 +64,10 @@ class RxHttp private constructor() : Serializable {
         timeOut: Long,
         cacheFile: File? = null,
         headers: Map<String, String>? = null,
-        interceptors: MutableList<Interceptor>? = null
+        interceptors: MutableList<Interceptor>? = null,
+        factory: Converter.Factory? = null
     ) {
-        create {
+        create(factory) {
             retryOnConnectionFailure(true)
             interceptors?.forEach {
                 addInterceptor(it)

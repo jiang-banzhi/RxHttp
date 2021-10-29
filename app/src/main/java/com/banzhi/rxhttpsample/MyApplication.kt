@@ -25,7 +25,7 @@ class MyApplication : Application() {
 //        getInstance().baseUrl("https://github.com/jiang-banzhi/")
 //            .create(60, externalCacheDir, null, arrayListOf(TokenInterecptor()))
         getInstance().baseUrl("https://github.com/jiang-banzhi/")
-            .create {
+            .create() {
                 retryOnConnectionFailure(true)
                 addInterceptor(TokenInterecptor())
                 addInterceptor(CacheInterceptor(this@MyApplication.applicationContext))
